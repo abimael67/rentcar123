@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import {AddClient} from '../clients/AddClient'
-import { ClientList } from '../clients/ClientList';
+import  ClientList  from '../clients/ClientList';
 
 export default class ClientPage extends Component {
        render(){
