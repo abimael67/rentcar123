@@ -7,14 +7,16 @@ Requires .Net Core 2.2
 3- generate the SQL Server database with the scripts below this notes <br />
 4- open the solution with Visual Studio <br />
 5- modify the connection string in appsettings.json file to match yours <br />
-5- build and run <br /><br />
+- build and run <br /><br />
 
 ----------------------- Scripts ---------------------------- <br />
 CREATE TABLE [dbo].[Brands] (
     [Id]   INT           IDENTITY (1, 1) NOT NULL,
     [Name] NVARCHAR (50) NOT NULL,
     PRIMARY KEY CLUSTERED ([Id] ASC)
-); <br /><br />
+);
+
+ <br /><br />
 
 CREATE TABLE [dbo].[Models] (
     [Id]      INT        IDENTITY (1, 1) NOT NULL,
@@ -33,10 +35,12 @@ CREATE TABLE [dbo].[Cars] (
     [DailyPrice] DECIMAL (18, 2) NOT NULL,
     [ClientId]   INT             NOT NULL,
     [Color]      VARCHAR (15)    NULL,
+    [ImageUrl]   NVARCHAR (500)  NULL,
     PRIMARY KEY CLUSTERED ([Id] ASC),
     CONSTRAINT [FK_Cars_To_Brands] FOREIGN KEY ([BrandId]) REFERENCES [dbo].[Brands] ([Id]),
     CONSTRAINT [FK_Cars_To_Models] FOREIGN KEY ([ModelId]) REFERENCES [dbo].[Models] ([Id])
-);<br /><br />
+);
+<br /><br />
 
 CREATE TABLE [dbo].[Clients] (
     [Id]          INT           IDENTITY (1, 1) NOT NULL,
