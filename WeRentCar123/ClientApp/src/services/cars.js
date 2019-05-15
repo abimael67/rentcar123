@@ -4,18 +4,44 @@ export const loadAllCars = () =>{
     fetch('api/Cars/')
         .then(response => response.json())
         .then(data => {
-            store.dispatch({type:'LOAD_CARS', cars:data.Value});
-            console.log(data)
+            store.dispatch({type:'LOAD_CARS', cars:data.Value});           
         });
 }
 export const addCar = (car) =>{
-    fetch('api/Cars', {
+   return  fetch('api/Cars', {
         method: 'POST', 
         body: "'"+JSON.stringify(car)+"'", 
         headers:{
           'Content-Type': 'application/json'
         }
-      }).then(res => res.json())
-      .catch(error => console.error('Error:', error))
-      .then(response => console.log('Success:', response));
+      })      
+}
+export const addImageToCar = (image, carId) =>{
+    var formData = new FormData()    
+    formData.append("file",image)    
+    return fetch('api/Cars/UploadImage/'+carId, {
+         method: 'POST', 
+         body: formData,          
+       })       
+ }
+
+ export const downloadImage = (carId) =>{       
+     return fetch('api/Cars/GetImage/'+carId, {
+         method: 'GET',             
+       })   
+ }
+
+export const removeCar = (id) =>{
+    return  fetch('api/Cars/'+id, {
+         method: 'DELETE',           
+         headers:{
+           'Content-Type': 'application/json'
+         }
+       })       
+ }
+
+ export const getCar = (carId) =>{       
+    return fetch('api/Cars/Get/'+carId, {
+        method: 'GET',             
+      })   
 }

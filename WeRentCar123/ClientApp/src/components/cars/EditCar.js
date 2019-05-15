@@ -1,14 +1,18 @@
-import React, { useState} from 'react'
+import React, { useState, useEffect} from 'react'
+import {withRouter} from 'react-router'
 import {connect} from 'react-redux'
-const AddCar = (props) => {    
+const EditCar = (props) => {    
     const [models, setModels] = useState([])
     const [car, setCar] = useState({})
     const [imageUrl, setImageUrl] = useState("")
     const [image, setImage] = useState({})
+    let currentCar = {}
     function selectBrand(e){              
         setModels(props.Brands.filter(b=> b.Id == e.target.value)[0].Models)
     }
-
+    useEffect(() => {       
+        props.Car.then(e=> {currentCar = e; console.log(e)})   
+      });
     function setCarProperty(e){       
         setCar(Object.assign(car, {}, {[e.target.name]:e.target.value}))
     }
@@ -23,18 +27,12 @@ const AddCar = (props) => {
             reader.readAsDataURL(input.target.files[0])
         }
     }
-    function addNewCar(){       
-        console.log(image)
-        props.addImage(image)
-        props.addNewCar(car)
-        
-    }
-    return (
-        
+   // console.log(currentCar)
+    return (        
         <form>
         <div className="form-group">
           <label htmlFor="ddlBrand">Brand</label>
-          <select name="BrandId" className="form-control" id="ddlBrand" onChange={(e)=>{selectBrand(e); setCarProperty(e); }} ><option>Select</option>
+          <select name="BrandId" className="form-control"  id="ddlBrand" onChange={(e)=>{selectBrand(e); setCarProperty(e); }} ><option>Select</option>
           {
               props.Brands.map((b,i)=>
                 <option key={i} value={b.Id}>{b.Name}</option>
@@ -80,7 +78,7 @@ const AddCar = (props) => {
             <input className="form-control" onChange={(e) => setPreview(e)  } id="flImage" type='file' />
             <img style={{maxWidth:50}} id="imgImage" src={imageUrl} alt="Car pic" />
         </div>
-        <button type="submit" onClick={(e)=>{e.preventDefault();addNewCar();}} className="btn btn-success">Add Car</button>{" "}
+        <button type="submit" onClick={(e)=>{e.preventDefault();}} className="btn btn-success">Save Car</button>{" "}
         <button className="btn btn-danger" onClick={()=> props.goto("/cars")}>Cancel</button>
       </form>
         
@@ -91,5 +89,5 @@ function mapStateToProps(state) {
         Brands: state.Brands
     }
 }
-
-export default connect(mapStateToProps, null)(AddCar)
+let connected = connect(mapStateToProps, null)(EditCar)
+export default withRouter(connected)

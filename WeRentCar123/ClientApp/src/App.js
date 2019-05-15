@@ -27,7 +27,7 @@ let routes = [
   },
   {
     type:"car",
-    path:"/cars/edit"
+    path:"/cars/edit/:id"
   },
   
 ]

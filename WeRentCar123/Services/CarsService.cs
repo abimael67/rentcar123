@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using WeRentCar123.Models;
 
 namespace WeRentCar123.Services
@@ -12,8 +15,7 @@ namespace WeRentCar123.Services
    
     public class CarsService : ICarsService
     {
-        private readonly RentCar123DbContext _context;
-
+        private readonly RentCar123DbContext _context;       
         public CarsService(RentCar123DbContext context)
         {
             _context = context;
@@ -43,7 +45,8 @@ namespace WeRentCar123.Services
                     Notes = c.Car.Notes,
                     BrandId = c.Car.BrandId,
                     ModelId = c.Car.ModelId,
-                    Color = c.Car.Color
+                    Color = c.Car.Color,
+                    ImageUrl = c.Car.ImageUrl
                 })
                 .ToListAsync();
 
@@ -99,10 +102,12 @@ namespace WeRentCar123.Services
         }
 
        
-        public ActionResult<Cars> PostCars1(Cars car)
+        public ActionResult<Cars> PostCars(Cars car)
         {
             try
             {
+                if(car.BrandId == 0 || car.ModelId == 0 || car.Year == 0 || string.IsNullOrEmpty(car.Color))
+                    return new BadRequestObjectResult(JsonConvert.SerializeObject("Required fields are empty or invalid"));
                 _context.Cars.Add(car);
                var r =  _context.SaveChanges();
                 return new OkObjectResult(car);
@@ -110,15 +115,49 @@ namespace WeRentCar123.Services
             catch(Exception ex)
             {
                 return new BadRequestObjectResult(ex.Message);
-            }
-            
+            }            
         }
 
-        public Task<ActionResult<Cars>> PostCars(Cars cars)
+        public async Task<ActionResult<Cars>> UploadImage(IFormFile file, int carId)
         {
-            throw new NotImplementedException();
+            try
+            {
+                string filename = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
+                string path = @"\uploads\" + filename;
+                using (FileStream output = System.IO.File.Create(path))
+                    await file.CopyToAsync(output);
+                var car = _context.Cars.Find(carId);
+                car.ImageUrl = path;
+                    await PutCars(carId, car);
+                return new OkObjectResult("Ok");
+            }
+            catch (Exception ex)
+            {
+                return new BadRequestObjectResult(ex.Message);
+            }
         }
 
+
+        public async Task<ActionResult> DownloadImage(int carId)
+        {
+            string path = _context.Cars.Find(carId).ImageUrl;
+            if (path == null)
+                return new BadRequestObjectResult("file not present");
+            byte[] fileBytes;
+
+            if (File.Exists(path))
+            {
+                fileBytes = await File.ReadAllBytesAsync(path);
+            }
+            else
+            {
+                return new BadRequestObjectResult("file not present");
+            }
+
+            return new FileContentResult(fileBytes, "application/octet-stream") {
+                FileDownloadName = Path.GetFileName(path)
+            };
+        }
 
         public async Task<ActionResult<Cars>> DeleteCars(int id)
         {
@@ -131,7 +170,7 @@ namespace WeRentCar123.Services
             _context.Cars.Remove(cars);
             await _context.SaveChangesAsync();
 
-            return cars;
+            return new OkObjectResult(cars);
         }
 
         private bool CarsExists(int id)

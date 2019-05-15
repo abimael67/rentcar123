@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 
 namespace WeRentCar123.Models
@@ -13,7 +14,7 @@ namespace WeRentCar123.Models
         public string Color { get; set; }
         public decimal DailyPrice { get; set; }
         public int ClientId { get; set; }
-
+        public string ImageUrl { get; set; }
         public virtual Brands Brand { get; set; }
         public virtual Clients Client { get; set; }
         public virtual Models Model { get; set; }

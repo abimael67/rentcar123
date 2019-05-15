@@ -35,30 +35,51 @@ namespace WeRentCar123.Controllers
             }
         }
 
-        // GET: api/Cars/5
-        [HttpGet("Get/{id}")]
-        public string Get(int id)
+        // GET: api/Cars/GetImage/4
+        [HttpGet("GetImage/{id}")]
+        public Task<ActionResult> GetImage(int id)
         {
-            return "value";
+            return Cars.DownloadImage(id);
+        }
+
+        // GET: api/Cars/Get/4
+        [HttpGet("Get/{id}")]
+        public Task<ActionResult<Cars>> Get(int id)
+        {
+            return Cars.GetCar(id);
         }
 
         // POST: api/Cars
         [HttpPost]
-        public void Post([FromBody] string value)
+        public ActionResult<Cars> Post([FromBody] string value)
         {
-            Cars.PostCars1(JsonConvert.DeserializeObject<Cars>(value));
+            return Cars.PostCars(JsonConvert.DeserializeObject<Cars>(value));
         }
 
+        // POST: api/Cars/UploadImage
+        [HttpPost("UploadImage/{carId}")]
+        public Task<ActionResult<Cars>> UploadImage(IFormFile file, int carId)
+        {
+            return Cars.UploadImage(file, carId);
+        }
+               
         // PUT: api/Cars/5
         [HttpPut("{id}")]
         public void Put(int id, [FromBody] string value)
         {
         }
 
-        // DELETE: api/ApiWithActions/5
+        // DELETE: api/Cars/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public Task<ActionResult<Cars>> Delete(int id)
         {
+            return Cars.DeleteCars(id);
         }
     }
+
+    public class AttachedImage {
+        public object file { get; set; }
+        public int carId { get; set; }
+    }
+
 }

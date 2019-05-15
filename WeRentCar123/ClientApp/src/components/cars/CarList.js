@@ -1,6 +1,9 @@
 import React from 'react'
 import {connect} from 'react-redux';
 const CarList = (props) => {
+    function removeCar(id){        
+        props.removeCar(id)
+    }
     return (
         <div>
             <button className="btn btn-success btn-sm" onClick={()=> props.goto("/cars/add")}>Add New</button>
@@ -16,13 +19,13 @@ const CarList = (props) => {
           </tr>
         </thead>
         <tbody>
-            {props.cars.map((c,i)=>
+            {props.cars.length === 0 ? <tr><td>Loading...</td></tr> : props.cars.map((c,i)=>
             <tr key={i}>
               <td>{c.Brand.Name}</td>
               <td>{c.Model.Name}</td>
               <td>{c.Year}</td> 
               <td>{c.Color}</td> 
-              <td><button className="btn btn-danger btn-sm">Delete</button>{" "}<button className="btn btn-warning btn-sm">Edit</button></td>             
+              <td><button className="btn btn-danger btn-sm" onClick={()=>{removeCar(c.Id)}}>Delete</button>{" "}<button className="btn btn-warning btn-sm" onClick={()=>{props.goto("cars/edit/"+c.Id)}}>Edit</button></td>             
             </tr>
             )}
             

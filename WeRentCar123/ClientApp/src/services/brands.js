@@ -4,7 +4,6 @@ export const loadAllBrands = () =>{
     fetch('api/Brands/')
         .then(response => response.json())
         .then(data => {
-            store.dispatch({type:'LOAD_BRANDS', brands:data.Value});
-            console.log(data)
+            store.dispatch({type:'LOAD_BRANDS', brands:data.Value});           
         });
 }
