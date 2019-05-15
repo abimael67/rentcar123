@@ -23,11 +23,9 @@ const AddCar = (props) => {
             reader.readAsDataURL(input.target.files[0])
         }
     }
-    function addNewCar(){       
-        console.log(image)
+    function addNewCar(){ 
         props.addImage(image)
-        props.addNewCar(car)
-        
+        props.addNewCar(car)        
     }
     return (
         

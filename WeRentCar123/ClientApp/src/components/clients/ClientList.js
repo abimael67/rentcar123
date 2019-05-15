@@ -1,6 +1,9 @@
 import React from 'react'
 import {connect} from 'react-redux'
 const ClientList = (props) => {
+    function removeClient(id){        
+        props.removeClient(id)
+    }
     return (
         <div>
             <button className="btn btn-success btn-sm" onClick={()=> props.goto("/clients/add")}>Add New</button>
@@ -18,10 +21,10 @@ const ClientList = (props) => {
             {
                 props.clients.map((c,i)=>
                 <tr key={i}>
-                    <td>{c.Firstname}</td>
-                    <td>{c.Lastname}</td>
-                    <td>{c.PhoneNumber}</td> 
-                    <td><button className="btn btn-danger btn-sm">Delete</button>{" "}<button className="btn btn-warning btn-sm">Edit</button></td>             
+                    <td>{c.firstname}</td>
+                    <td>{c.lastname}</td>
+                    <td>{c.phoneNumber}</td> 
+                    <td><button className="btn btn-danger btn-sm" onClick={()=>{removeClient(c.id)}}>Delete</button>{" "}<button className="btn btn-warning btn-sm">Edit</button></td>             
                  </tr>
                 )
             }

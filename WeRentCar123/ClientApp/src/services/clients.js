@@ -1,21 +1,27 @@
 import store from '../store/store'
 
-export const loadAllCars = () =>{
+export const loadAllClients = () =>{
     fetch('api/Clients/')
         .then(response => response.json())
-        .then(data => {
-            store.dispatch({type:'LOAD_CLIENTS', clients:data.Value});
-            console.log(data)
+        .then(data => {            
+            store.dispatch({type:'LOAD_CLIENTS', clients:data});           
         });
 }
-export const addCar = (car) =>{
-    fetch('api/Clients', {
+export const addClient = (client) =>{
+   return fetch('api/Clients', {
         method: 'POST', 
-        body: "'"+JSON.stringify(car)+"'", 
+        body: "'"+JSON.stringify(client)+"'", 
         headers:{
           'Content-Type': 'application/json'
         }
-      }).then(res => res.json())
-      .catch(error => console.error('Error:', error))
-      .then(response => console.log('Success:', response));
+      })
 }
+
+export const removeClient = (id) =>{
+    return  fetch('api/Clients/'+id, {
+         method: 'DELETE',           
+         headers:{
+           'Content-Type': 'application/json'
+         }
+       })       
+ }

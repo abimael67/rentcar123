@@ -51,11 +51,7 @@ namespace WeRentCar123.Models
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Cars_To_Brands");
 
-                entity.HasOne(d => d.Client)
-                    .WithMany(p => p.Cars)
-                    .HasForeignKey(d => d.ClientId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Cars_To_Clients");
+               
 
                 entity.HasOne(d => d.Model)
                     .WithMany(p => p.Cars)

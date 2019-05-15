@@ -7,7 +7,7 @@ namespace WeRentCar123.Models
     {
         public Clients()
         {
-            Cars = new HashSet<Cars>();
+           // Cars = new HashSet<Cars>();
         }
 
         public int Id { get; set; }
@@ -15,6 +15,6 @@ namespace WeRentCar123.Models
         public string Lastname { get; set; }
         public string PhoneNumber { get; set; }
 
-        public virtual ICollection<Cars> Cars { get; set; }
+       // public virtual ICollection<Cars> Cars { get { return null; } set { } }
     }
 }

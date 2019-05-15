@@ -33,6 +33,7 @@ namespace WeRentCar123
             });
             services.AddScoped<IBrandsService, BrandsService>();
             services.AddScoped<ICarsService, CarsService>();
+            services.AddScoped<IClientsService, ClientsService>();
 
         }
 
