@@ -12,7 +12,7 @@ namespace WeRentCar123.Services
     {
         Task<ActionResult<IEnumerable<Cars>>> GetCars();
         Task<ActionResult<Cars>> GetCar(int id);
-        Task<IActionResult> PutCars(int id, Cars cars);
+        Task<ActionResult> PutCars(int id, Cars cars);
         ActionResult<Cars> PostCars(Cars car);
         Task<ActionResult<Cars>> DeleteCars(int id);
         Task<ActionResult<Cars>> UploadImage(IFormFile file, int carId);

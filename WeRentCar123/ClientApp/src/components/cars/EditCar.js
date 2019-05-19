@@ -1,38 +1,34 @@
 import React, { useState, useEffect} from 'react'
 import {withRouter} from 'react-router'
 import {connect} from 'react-redux'
+import { isObjectEmpty } from '../../common/util';
 const EditCar = (props) => {    
     const [models, setModels] = useState([])
     const [car, setCar] = useState({})
-    const [imageUrl, setImageUrl] = useState("")
-    const [image, setImage] = useState({})
-    let currentCar = {}
-    function selectBrand(e){              
-        setModels(props.Brands.filter(b=> b.Id == e.target.value)[0].Models)
+    const [imageUrl, setImageUrl] = useState("")   
+    function selectBrand(brandId){              
+        setModels(props.Brands.find(b=> b.Id == brandId).Models)
     }
-    useEffect(() => {       
-        props.Car.then(e=> {currentCar = e; console.log(e)})   
-      });
+    useEffect(() => {      
+        if(car.brandId && props.Brands.length > 0){
+            selectBrand(car.brandId)           
+        }
+        if(car.id && !imageUrl)
+            props.downloadImage(car.id, (resp)=> setImageUrl(resp))
+        if(isObjectEmpty(car))         
+            props.getCar.then(currentCar=> setCar(currentCar[0]))   
+      }, [car]);
     function setCarProperty(e){       
         setCar(Object.assign(car, {}, {[e.target.name]:e.target.value}))
     }
-
-    function setPreview(input){
-        if (input.target.files && input.target.files[0]) {
-            var reader = new FileReader();    
-            reader.onload = function (e) {
-                setImageUrl(e.target.result)
-            }
-            setImage(input.target.files[0])
-            reader.readAsDataURL(input.target.files[0])
-        }
-    }
-   // console.log(currentCar)
     return (        
         <form>
+        <div className="form-group">                  
+            <img style={{maxWidth:250}} id="imgImage" src={imageUrl} alt="Car pic" />
+        </div>
         <div className="form-group">
           <label htmlFor="ddlBrand">Brand</label>
-          <select name="BrandId" className="form-control"  id="ddlBrand" onChange={(e)=>{selectBrand(e); setCarProperty(e); }} ><option>Select</option>
+          <select name="brandId" className="form-control" value={car.brandId} id="ddlBrand" onChange={(e)=>{selectBrand(e.target.value); setCarProperty(e); }} ><option>Select</option>
           {
               props.Brands.map((b,i)=>
                 <option key={i} value={b.Id}>{b.Name}</option>
@@ -42,7 +38,7 @@ const EditCar = (props) => {
         </div>
         <div className="form-group">
           <label htmlFor="ddlModel">Model</label>
-          <select name="ModelId" onChange={(e)=>setCarProperty(e)} className="form-control" id="ddlModel" ><option>Select</option>
+          <select name="modelId" value={car.modelId} onChange={(e)=>setCarProperty(e)} className="form-control" id="ddlModel" ><option>Select</option>
           {
               models.map((b,i)=>
                 <option key={i} value={b.Id}>{b.Name}</option>
@@ -52,7 +48,7 @@ const EditCar = (props) => {
         </div>
         <div className="form-group">
           <label htmlFor="ddlYear">Year</label>
-          <select name="Year" onChange={(e)=>setCarProperty(e)} className="form-control" id="ddlYear" ><option>Select</option>
+          <select name="year" onChange={(e)=>setCarProperty(e)} value={car.year} className="form-control" id="ddlYear" ><option>Select</option>
           <option>2014</option>
           <option>2015</option>
           <option>2016</option>
@@ -63,22 +59,18 @@ const EditCar = (props) => {
         </div>
         <div className="form-group">
             <label htmlFor="txtColor">Color</label>
-            <input name="Color" onChange={(e)=>setCarProperty(e)} type="text" className="form-control" id="txtColor" placeholder="Enter the color"/>
+            <input name="color" value={car.color ? car.color : ""} onChange={(e)=>setCarProperty(e)} type="text" className="form-control" id="txtColor" placeholder="Enter the color"/>
         </div>
         <div className="form-group">
             <label htmlFor="txtNotes">Notes</label>
-            <input name="Notes" onChange={(e)=>setCarProperty(e)} type="text" className="form-control" id="txtNotes" placeholder="Enter a note"/>
+            <input name="notes" value={car.notes ? car.notes: "" } onChange={(e)=>setCarProperty(e)} type="text" className="form-control" id="txtNotes" placeholder="Enter a note"/>
         </div>
         <div className="form-group">
             <label htmlFor="txtDailyPrice">Daily Price $</label>
-            <input name="DailyPrice" onChange={(e)=>setCarProperty(e)} type="number" className="form-control" id="txtDailyPrice" placeholder="Enter an amount"/>
+            <input name="dailyPrice" value={car.dailyPrice? car.dailyPrice : ""} onChange={(e)=>setCarProperty(e)} type="number" className="form-control" id="txtDailyPrice" placeholder="Enter an amount"/>
         </div>
-        <div className="form-group">
-            <label htmlFor="flImage">Image</label>
-            <input className="form-control" onChange={(e) => setPreview(e)  } id="flImage" type='file' />
-            <img style={{maxWidth:50}} id="imgImage" src={imageUrl} alt="Car pic" />
-        </div>
-        <button type="submit" onClick={(e)=>{e.preventDefault();}} className="btn btn-success">Save Car</button>{" "}
+       
+        <button type="submit" onClick={(e)=>{e.preventDefault();props.updateCar(car)}} className="btn btn-success">Save Car</button>{" "}
         <button className="btn btn-danger" onClick={()=> props.goto("/cars")}>Cancel</button>
       </form>
         

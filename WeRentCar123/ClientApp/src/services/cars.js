@@ -16,6 +16,16 @@ export const addCar = (car) =>{
         }
       })      
 }
+export const updateCar = (car, carId) =>{
+  car.imageUrl = "" //set imageUrl to empty, we don't want to update it
+  return  fetch('api/Cars?carId='+carId, {
+       method: 'PUT', 
+       body: "'"+JSON.stringify(car)+"'", 
+       headers:{
+         'Content-Type': 'application/json'
+       }
+     })      
+}
 export const addImageToCar = (image, carId) =>{
     var formData = new FormData()    
     formData.append("file",image)    

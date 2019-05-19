@@ -55,6 +55,13 @@ namespace WeRentCar123.Controllers
         {
             return Cars.PostCars(JsonConvert.DeserializeObject<Cars>(value));
         }
+          // PUT: api/Cars
+        [HttpPut]
+        public Task<ActionResult> Put([FromBody] string value, int carId)
+        {
+            return Cars.PutCars(carId, JsonConvert.DeserializeObject<Cars>(value));
+        }
+
 
         // POST: api/Cars/UploadImage
         [HttpPost("UploadImage/{carId}")]

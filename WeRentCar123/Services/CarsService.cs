@@ -73,18 +73,26 @@ namespace WeRentCar123.Services
             return new OkObjectResult( cars);
         }
        
-        public async Task<IActionResult> PutCars(int id, Cars car)
+        public async Task<ActionResult> PutCars(int id, Cars car)
         {
             if (id != car.Id)
             {
                 return new BadRequestResult();
             }
-
-            _context.Entry(car).State = EntityState.Modified;
+            var updatedCar = new Cars { Id = car.Id, BrandId = car.BrandId, ClientId = car.ClientId, Color = car.Color, ModelId = car.ModelId };
+            var carToUpdate = _context.Cars.Find(id);
+            carToUpdate.BrandId = car.BrandId;
+            carToUpdate.ClientId = car.ClientId;
+            carToUpdate.Color = car.Color;
+            carToUpdate.ModelId = car.ModelId;
+            carToUpdate.Notes = car.Notes;
+            carToUpdate.DailyPrice = car.DailyPrice; 
+            _context.Entry(carToUpdate).State = EntityState.Modified;
 
             try
             {
                 await _context.SaveChangesAsync();
+                return new OkResult();
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -96,9 +104,7 @@ namespace WeRentCar123.Services
                 {
                     throw;
                 }
-            }
-
-            return new NoContentResult();
+            }           
         }
 
        
