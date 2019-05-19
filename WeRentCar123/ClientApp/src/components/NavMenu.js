@@ -1,49 +1,24 @@
 import React, { Component } from 'react';
-import { Collapse, Container, Navbar, NavbarBrand, NavbarToggler, NavItem, NavLink } from 'reactstrap';
-import { Link } from 'react-router-dom';
-import './NavMenu.css';
-
-export class NavMenu extends Component {
-  static displayName = NavMenu.name;
-
-  constructor (props) {
-    super(props);
-
-    this.toggleNavbar = this.toggleNavbar.bind(this);
-    this.state = {
-      collapsed: true
-    };
-  }
-
-  toggleNavbar () {
-    this.setState({
-      collapsed: !this.state.collapsed
-    });
-  }
+import {withRouter} from 'react-router'
+import { Menu, Icon } from 'antd';
+class NavMenu extends Component {
+  handleClick = (e) => this.props.history.push(e.item.props.to)
 
   render () {
+    let currentPath = this.props.location.pathname.split('/')[1]
     return (
-      <header>
-        <Navbar className="navbar-expand-sm navbar-toggleable-sm ng-white border-bottom box-shadow mb-3" light>
-          <Container>
-            <NavbarBrand tag={Link} to="/">WeRentCar123</NavbarBrand>
-            <NavbarToggler onClick={this.toggleNavbar} className="mr-2" />
-            <Collapse className="d-sm-inline-flex flex-sm-row-reverse" isOpen={!this.state.collapsed} navbar>
-              <ul className="navbar-nav flex-grow">
-                <NavItem>
-                  <NavLink tag={Link} className="text-dark" to="/">Home</NavLink>
-                </NavItem>
-                <NavItem>
-                  <NavLink tag={Link} className="text-dark" to="/clients">Clients</NavLink>
-                </NavItem>
-                <NavItem>
-                  <NavLink tag={Link} className="text-dark" to="/cars">Cars</NavLink>
-                </NavItem>
-              </ul>
-            </Collapse>
-          </Container>
-        </Navbar>
-      </header>
+      
+      <Menu
+      theme="dark"
+      mode="horizontal"
+      defaultSelectedKeys={[currentPath ? currentPath : "home"]}
+      style={{ lineHeight: '64px' }}
+    >
+      <Menu.Item onClick={this.handleClick} to="/home" key="home"><Icon type="home"/>Home</Menu.Item>
+      <Menu.Item onClick={this.handleClick} to="/cars" key="cars"><Icon type="car" />Cars</Menu.Item>
+      <Menu.Item onClick={this.handleClick} to="/clients" key="clients"><Icon type="user" />Clients</Menu.Item>
+    </Menu>
     );
   }
 }
+export default withRouter(NavMenu)

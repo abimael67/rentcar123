@@ -62,7 +62,6 @@ export default class CarPage extends Component {
         this.setState({carImageUpload: image})
     }
     removeCar(id){
-        if(window.confirm("are you sure?"))
             removeCar(id)
             .then(res => {
                 if(!res.ok)
